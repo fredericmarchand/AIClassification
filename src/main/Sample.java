@@ -50,9 +50,9 @@ public class Sample {
 		for (int i = 0; i < size; ++i) {
 			for (int j = 0; j < dimensions; ++j) {
 				samples[i][j] = generateValue(probabilities[j]);
-				System.out.print(samples[i][j] + " ");
+				//System.out.print(samples[i][j] + " ");
 			}
-			System.out.println();
+			//System.out.println();
 		}		
 	}
 	
@@ -61,6 +61,13 @@ public class Sample {
 		
 		double[] probs = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.1 };
 		s.generateSample(probs);
+	}
+	
+	public void crossValidation(int fold) {
+		int chunkSize = size / fold;
+		for (int f = 0; f < fold; ++f) {
+			
+		}
 	}
 	
 }

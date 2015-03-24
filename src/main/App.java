@@ -15,6 +15,7 @@ public class App {
 		int c = 4;  //c = classes
 		double[][] vectors = new double[c][d];
 		Random r = new Random();
+		Sample[] samples = new Sample[d];
 		
 		for (int j = 0; j < c; ++j) {
 			for (int i = 0; i < d; ++i) {
@@ -24,7 +25,10 @@ public class App {
 			System.out.println();
 		}
 		
-		
+		for (int i = 0; i < c; ++i) {
+			samples[i] = new Sample(2000, d);
+			samples[i].generateSample(vectors[i]);
+		}
 		
 	}
 
