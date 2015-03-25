@@ -21,6 +21,13 @@ public class Sample {
 		this.vector = vector;
 		this.dimensions = dimensions;
 	}
+	
+	public Sample(Sample s) {
+		super();
+		this.probability = 0.0;
+		this.vector = s.vector;
+		this.dimensions = s.dimensions;
+	}
 
 	public double getProbability() {
 		return probability;

@@ -10,12 +10,15 @@ public class SampleSet {
 	
 	private int size;
 	private int dimensions;
-	private int samples[][];
+	private Sample samples[];
 	
 	public SampleSet(int s, int dim) {
 		size = s;
 		dimensions = dim;
-		samples = new int[s][dim];
+		samples = new Sample[s];
+		for (int i = 0; i < size; ++i) {
+			samples[i] = new Sample(dimensions);
+		}
 	}
 
 	public int getSize() {
@@ -26,11 +29,11 @@ public class SampleSet {
 		this.size = size;
 	}
 
-	public int[][] getSamples() {
+	public Sample[] getSamples() {
 		return samples;
 	}
 
-	public void setSamples(int samples[][]) {
+	public void setSamples(Sample samples[]) {
 		this.samples = samples;
 	}
 	
@@ -51,7 +54,7 @@ public class SampleSet {
 	public void generateSample(double[] probabilities) {
 		for (int i = 0; i < size; ++i) {
 			for (int j = 0; j < dimensions; ++j) {
-				samples[i][j] = generateValue(probabilities[j]);
+				samples[i].getVector()[j] = generateValue(probabilities[j]);
 				//System.out.print(samples[i][j] + " ");
 			}
 			//System.out.println();
@@ -61,6 +64,7 @@ public class SampleSet {
 	public double[] getEstimatedProbabilities(int f, int fold) {
 		int chunkSize = size / fold;
 		int trainingSize = ((fold - 1) * chunkSize);
+		System.out.println(trainingSize);
 		
 		double zeroCounts[] = new double[dimensions];
 		//perform training
@@ -70,8 +74,8 @@ public class SampleSet {
 			//for each value in the vector
 			for (int j = 0; j < dimensions; ++j) {
 				//If within the training set
-				if (i <= f * chunkSize || i >= (f+1) * chunkSize) {
-					if (samples[i][j] == 0) 
+				if (i <= (f * chunkSize) || i >= ((f+1) * chunkSize)) {
+					if (samples[i].getVector()[j] == 0) 
 						zeroCounts[j]++;
 				}
 			}
@@ -82,9 +86,9 @@ public class SampleSet {
 		return zeroCounts;	
 	}
 	
-	public ArrayList<Sample> getTestingSet(int fold) {
+	public ArrayList<Sample> getTestingSet(int f, int fold) {
 		int testingSize = size / fold;
-		
+		System.out.println(testingSize);
 		ArrayList<Sample> samples = new ArrayList<Sample>();
 		
 		//For each sample
@@ -92,9 +96,9 @@ public class SampleSet {
 			//for each value in the vector
 			for (int j = 0; j < dimensions; ++j) {
 				//If within the training set
-				if (i > fold * testingSize && i < (fold+1) * testingSize) {
-					if (this.samples[i][j] == 0) 
-						samples.add(new Sample(dimensions, this.samples[i]));
+				if (i >= (f * testingSize) && i <= ((f+1) * testingSize)) {
+					if (this.samples[i].getVector()[j] == 0) 
+						samples.add(new Sample(this.samples[i]));
 				}
 			}
 		}
@@ -107,7 +111,7 @@ public class SampleSet {
 		for (int d = 0; d < dimensions; ++d) {
 			// P(Xi = 0 | W1)
 			
-			if (samples[sampleIndex][d] == 0)
+			if (samples[sampleIndex].getVector()[d] == 0)
 				probability *= estimatedProbs[d];
 			else
 				probability *= (1 - estimatedProbs[d]);
@@ -126,7 +130,7 @@ public class SampleSet {
 		
 		double classProbability = 1.0;
 		for (int i = 0; i < s.getDimensions(); ++i) {
-			System.out.println(s.getSamples()[0][i]);
+			System.out.println(s.getSamples()[0].getVector()[i]);
 			classProbability *= estProbs[i];
 		}
 		

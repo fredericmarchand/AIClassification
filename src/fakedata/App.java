@@ -5,12 +5,11 @@ import java.util.Random;
 
 public class App {
 
-	public static double roundToDecimals(double d, int c)  
-	{   
+	public static double roundToDecimals(double d, int c) {   
 		int temp = (int)(d * Math.pow(10 , c));  
 		return ((double)temp)/Math.pow(10 , c);  
 	}
-	
+		
 	public static void main(String[] args) {
 		int fold = 8; //8-fold cross validation
 		int d = 10;	//d-dimensional feature space
@@ -45,14 +44,15 @@ public class App {
 			
 			//get testing sets
 			for (int i = 0; i < c; ++i) {
-				testingSets.add(samples[i].getTestingSet(f));
+				testingSets.add(samples[i].getTestingSet(f, fold));
 			}
 			
 			//for each sample in each classes test set
-				//classify
-			
+			for (ArrayList<Sample> list: testingSets) {
+				for (Sample sample: list) {
+					//classify
+				}
+			}			
 		}
-
 	}
-
 }
