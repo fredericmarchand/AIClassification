@@ -1,5 +1,6 @@
 package fakedata;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class App {
@@ -15,8 +16,9 @@ public class App {
 		int d = 10;	//d-dimensional feature space
 		int c = 4;  //c = classes
 		double[][] initialProbabilities = new double[c][d];
+		ArrayList<ArrayList<Sample>> testingSets = new ArrayList<ArrayList<Sample>>();
 		Random r = new Random();
-		Sample[] samples = new Sample[c];
+		SampleSet[] samples = new SampleSet[c];
 		
 		for (int j = 0; j < c; ++j) {
 			for (int i = 0; i < d; ++i) {
@@ -27,7 +29,7 @@ public class App {
 		}
 		
 		for (int i = 0; i < c; ++i) {
-			samples[i] = new Sample(2000, d);
+			samples[i] = new SampleSet(2000, d);
 			samples[i].generateSample(initialProbabilities[i]);
 		}
 		
@@ -40,6 +42,14 @@ public class App {
 			}
 			
 			//testing 
+			
+			//get testing sets
+			for (int i = 0; i < c; ++i) {
+				testingSets.add(samples[i].getTestingSet(f));
+			}
+			
+			//for each sample in each classes test set
+				//classify
 			
 		}
 
