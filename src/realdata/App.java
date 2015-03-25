@@ -7,11 +7,11 @@ import java.util.ArrayList;
 
 public class App {
 	
-	public static final int TYPE_FLOWER = 0;
-	public static final int TYPE_WINE = 1;
-	public static final int TYPE_DISEASE = 2;
+	public static final String TYPE_FLOWER = "files/iris.csv";
+	public static final String TYPE_WINE = "files/wine.csv";
+	public static final String TYPE_DISEASE = "files/heartDisease.csv";
 	
-	public static ArrayList<Object> readFile(String fileToParse, int type) {
+	public static ArrayList<Object> readFile(String fileToParse) {
 		
 		ArrayList<Object> data = new ArrayList<Object>();
 		
@@ -29,7 +29,7 @@ public class App {
             while ((line = fileReader.readLine()) != null) {
                 //Get all tokens available in line
                 String[] tokens = line.split(DELIMITER);
-                switch (type) {
+                switch (fileToParse) {
                 case TYPE_FLOWER:
                 	data.add(new Flower(tokens));
                 	break;
@@ -57,7 +57,7 @@ public class App {
 	}
 
     public static void main(String[] args) {
-    	ArrayList<Object> data = readFile("files/iris.csv", TYPE_FLOWER);
+    	ArrayList<Object> data = readFile(TYPE_WINE);
     	for (Object o: data) {
     		System.out.println(o.toString());
     	}
