@@ -1,6 +1,8 @@
 package realdata;
 
-public class Wine {
+import java.util.ArrayList;
+
+public class Wine extends Data {
 	private double _class;
 	private double _alcohol;
 	private double _malicAcid;
@@ -178,5 +180,156 @@ public class Wine {
 
 	public void set_proline(double _proline) {
 		this._proline = _proline;
+	}
+	
+	public static ArrayList<Integer> getThresholds(ArrayList<Data> list) {
+		ArrayList<Integer> thresholds = new ArrayList<Integer>();
+		int a = 0;
+		int b = 0;
+		int c = 0;
+		int d = 0;
+		int e = 0;
+		int f = 0;
+		int g = 0;
+		int h = 0;
+		int i = 0;
+		int j = 0;
+		int k = 0;
+		int l = 0;
+		int m = 0;
+		int n = 0;
+		for (Data w: list) {
+			a += ((Wine)w).get_class();               
+			b += ((Wine)w).get_alcohol();             
+			c += ((Wine)w).get_malicAcid();           
+			d += ((Wine)w).get_ash();                 
+			d += ((Wine)w).get_alcalityOfAsh();       
+			d += ((Wine)w).get_magnesium();           
+			d += ((Wine)w).get_totalPhenols();        
+			d += ((Wine)w).get_flavanoids();          
+			d += ((Wine)w).get_nonflavanoidPhenols(); 
+			d += ((Wine)w).get_proanthocyanins();     
+			d += ((Wine)w).get_colorIntensity();      
+			d += ((Wine)w).get_hue();                 
+			d += ((Wine)w).get_od280_315();           
+			d += ((Wine)w).get_proline();             
+		}
+		thresholds.add(a /= list.size());
+		thresholds.add(b /= list.size());
+		thresholds.add(c /= list.size());
+		thresholds.add(d /= list.size());
+		thresholds.add(e /= list.size());
+		thresholds.add(f /= list.size());
+		thresholds.add(g /= list.size());
+		thresholds.add(h /= list.size());
+		thresholds.add(i /= list.size());
+		thresholds.add(j /= list.size());
+		thresholds.add(k /= list.size());
+		thresholds.add(l /= list.size());
+		thresholds.add(m /= list.size());
+		thresholds.add(n /= list.size());
+		
+		return thresholds;
+	}
+
+	@Override
+	public void convertToBinary(ArrayList<Integer> thresh) {
+		if (_class < thresh.get(0)) {
+			_class = 0;
+		}
+		else {
+			_class = 1;
+		}
+		
+		if (_alcohol < thresh.get(1)) {
+			_alcohol = 0;
+		}
+		else {
+			_alcohol = 1;
+		}
+		
+		if (_malicAcid < thresh.get(2)) {
+			_malicAcid = 0;
+		}
+		else {
+			_malicAcid = 1;
+		}
+		
+		if (_ash < thresh.get(3)) {
+			_ash = 0;
+		}
+		else {
+			_ash = 1;
+		}
+		
+		if (_alcalityOfAsh < thresh.get(4)) {
+			_alcalityOfAsh = 0;
+		}
+		else {
+			_alcalityOfAsh = 1;
+		}
+		
+		if (_magnesium < thresh.get(5)) {
+			_magnesium = 0;
+		}
+		else {
+			_magnesium = 1;
+		}
+		
+		if (_totalPhenols < thresh.get(6)) {
+			_totalPhenols = 0;
+		}
+		else {
+			_totalPhenols = 1;
+		}
+		
+		if (_flavanoids < thresh.get(7)) {
+			_flavanoids = 0;
+		}
+		else {
+			_flavanoids = 1;
+		}
+		
+		if (_nonflavanoidPhenols < thresh.get(8)) {
+			_nonflavanoidPhenols = 0;
+		}
+		else {
+			_nonflavanoidPhenols = 1;
+		}
+		
+		if (_proanthocyanins < thresh.get(9)) {
+			_proanthocyanins = 0;
+		}
+		else {
+			_proanthocyanins = 1;
+		}
+		
+		if (_colorIntensity < thresh.get(10)) {
+			_colorIntensity = 0;
+		}
+		else {
+			_colorIntensity = 1;
+		}
+		
+		if (_hue < thresh.get(11)) {
+			_hue = 0;
+		}
+		else {
+			_hue = 1;
+		}
+		
+		if (_od280_315 < thresh.get(12)) {
+			_od280_315 = 0;
+		}
+		else {
+			_od280_315 = 1;
+		}
+		
+		if (_proline < thresh.get(13)) {
+			_proline = 0;
+		}
+		else {
+			_proline = 1;
+		}
 	}
 }

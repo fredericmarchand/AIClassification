@@ -1,6 +1,8 @@
 package realdata;
 
-public class Flower {
+import java.util.ArrayList;
+
+public class Flower extends Data {
 	
 	private double _sepalLength;
 	private double _sepalWidth;
@@ -62,6 +64,55 @@ public class Flower {
 		this._sepalWidth = _sepalWidth;
 	}
 	
-
+	@Override
+	public void convertToBinary(ArrayList<Integer> thresh) {
+		if (_sepalLength < thresh.get(0)) {
+			_sepalLength = 0;
+		}
+		else {
+			_sepalLength = 1;
+		}
+		
+		if (_sepalWidth < thresh.get(1)) {
+			_sepalWidth = 0;
+		}
+		else {
+			_sepalWidth = 1;
+		}
+		
+		if (_petalLength < thresh.get(2)) {
+			_petalLength = 0;
+		}
+		else {
+			_petalLength = 1;
+		}
+		
+		if (_petalWidth < thresh.get(3)) {
+			_petalWidth = 0;
+		}
+		else {
+			_petalWidth = 1;
+		}
+	}
+	
+	public static ArrayList<Integer> getThresholds(ArrayList<Data> list) {
+		ArrayList<Integer> thresholds = new ArrayList<Integer>();
+		int a = 0;
+		int b = 0;
+		int c = 0;
+		int d = 0;
+		for (Data f: list) {
+			a += ((Flower)f).get_sepalLength();
+			b += ((Flower)f).get_sepalWidth();
+			c += ((Flower)f).get_petalLength();
+			d += ((Flower)f).get_petalWidth();
+		}
+		thresholds.add(a /= list.size());
+		thresholds.add(b /= list.size());
+		thresholds.add(c /= list.size());
+		thresholds.add(d /= list.size());
+		
+		return thresholds;
+	}
 	
 }

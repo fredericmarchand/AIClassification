@@ -1,6 +1,8 @@
 package realdata;
 
-public class HeartDisease {
+import java.util.ArrayList;
+
+public class HeartDisease extends Data {
 	
 	private double _age;
 	private double _gender;
@@ -175,6 +177,157 @@ public class HeartDisease {
 
 	public void set_class(double _class) {
 		this._class = _class;
+	}
+	
+	public static ArrayList<Integer> getThresholds(ArrayList<Data> list) {
+		ArrayList<Integer> thresholds = new ArrayList<Integer>();
+		int a = 0;
+		int b = 0;
+		int c = 0;
+		int d = 0;
+		int e = 0;
+		int f = 0;
+		int g = 0;
+		int h = 0;
+		int i = 0;
+		int j = 0;
+		int k = 0;
+		int l = 0;
+		int m = 0;
+		int n = 0;
+		for (Data hd: list) {
+			a += ((HeartDisease)hd).get_age();     
+			b += ((HeartDisease)hd).get_gender();  
+			c += ((HeartDisease)hd).get_cp();      
+			d += ((HeartDisease)hd).get_trestbps();
+			d += ((HeartDisease)hd).get_chol();    
+			d += ((HeartDisease)hd).get_fbs();     
+			d += ((HeartDisease)hd).get_restecg(); 
+			d += ((HeartDisease)hd).get_thalach(); 
+			d += ((HeartDisease)hd).get_exang();   
+			d += ((HeartDisease)hd).get_oldpeak(); 
+			d += ((HeartDisease)hd).get_dlope();   
+			d += ((HeartDisease)hd).get_ca();      
+			d += ((HeartDisease)hd).get_thal();    
+			d += ((HeartDisease)hd).get_class();   
+		}
+		thresholds.add(a /= list.size());
+		thresholds.add(b /= list.size());
+		thresholds.add(c /= list.size());
+		thresholds.add(d /= list.size());
+		thresholds.add(e /= list.size());
+		thresholds.add(f /= list.size());
+		thresholds.add(g /= list.size());
+		thresholds.add(h /= list.size());
+		thresholds.add(i /= list.size());
+		thresholds.add(j /= list.size());
+		thresholds.add(k /= list.size());
+		thresholds.add(l /= list.size());
+		thresholds.add(m /= list.size());
+		thresholds.add(n /= list.size());
+		
+		return thresholds;
+	}
+
+	@Override
+	public void convertToBinary(ArrayList<Integer> thresh) {
+		if (_age < thresh.get(0)) {
+			_age = 0;
+		}
+		else {
+			_age = 1;
+		}
+		
+		if (_gender < thresh.get(1)) {
+			_gender = 0;
+		}
+		else {
+			_gender = 1;
+		}
+		
+		if (_cp < thresh.get(2)) {
+			_cp = 0;
+		}
+		else {
+			_cp = 1;
+		}
+		
+		if (_trestbps < thresh.get(3)) {
+			_trestbps = 0;
+		}
+		else {
+			_trestbps = 1;
+		}
+		
+		if (_chol < thresh.get(4)) {
+			_chol = 0;
+		}
+		else {
+			_chol = 1;
+		}
+		
+		if (_fbs < thresh.get(5)) {
+			_fbs = 0;
+		}
+		else {
+			_fbs = 1;
+		}
+		
+		if (_restecg < thresh.get(6)) {
+			_restecg = 0;
+		}
+		else {
+			_restecg = 1;
+		}
+		
+		if (_thalach < thresh.get(7)) {
+			_thalach = 0;
+		}
+		else {
+			_thalach = 1;
+		}
+		
+		if (_exang < thresh.get(8)) {
+			_exang = 0;
+		}
+		else {
+			_exang = 1;
+		}
+		
+		if (_oldpeak < thresh.get(9)) {
+			_oldpeak = 0;
+		}
+		else {
+			_oldpeak = 1;
+		}
+		
+		if (_dlope < thresh.get(10)) {
+			_dlope = 0;
+		}
+		else {
+			_dlope = 1;
+		}
+		
+		if (_ca < thresh.get(11)) {
+			_ca = 0;
+		}
+		else {
+			_ca = 1;
+		}
+		
+		if (_thal < thresh.get(12)) {
+			_thal = 0;
+		}
+		else {
+			_thal = 1;
+		}
+		
+		if (_class < thresh.get(13)) {
+			_class = 0;
+		}
+		else {
+			_class = 1;
+		}
 	}
 	
 }

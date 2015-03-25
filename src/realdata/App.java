@@ -11,9 +11,9 @@ public class App {
 	public static final String TYPE_WINE = "files/wine.csv";
 	public static final String TYPE_DISEASE = "files/heartDisease.csv";
 	
-	public static ArrayList<Object> readFile(String fileToParse) {
+	public static ArrayList<Data> readFile(String fileToParse) {
 		
-		ArrayList<Object> data = new ArrayList<Object>();
+		ArrayList<Data> data = new ArrayList<Data>();
 		
 		//Input file which needs to be parsed
         BufferedReader fileReader = null;
@@ -57,9 +57,33 @@ public class App {
 	}
 
     public static void main(String[] args) {
-    	ArrayList<Object> data = readFile(TYPE_WINE);
-    	for (Object o: data) {
-    		System.out.println(o.toString());
+    	String type = TYPE_DISEASE;
+    	
+    	ArrayList<Data> data = readFile(type);
+    	//for (Data d: data) {
+    	//	System.out.println(d.toString());
+    	//}
+    	
+    	ArrayList<Integer> thresh = null;
+    	
+    	switch (type) {
+    	case TYPE_FLOWER:
+    		thresh = Flower.getThresholds(data);
+        	break;
+        case TYPE_WINE:
+        	thresh = Wine.getThresholds(data);
+        	break;
+        case TYPE_DISEASE:
+        	thresh = HeartDisease.getThresholds(data);
+        	break;    	
+        }
+    	
+    	for (Data d: data) {
+    		d.convertToBinary(thresh);
+    	}
+    	
+    	for (Data d: data) {
+    		System.out.println(d.toString());
     	}
     }
 
