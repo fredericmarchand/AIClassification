@@ -2,6 +2,20 @@ package realdata;
 
 public class Wine {
 	private double _class;
+	private double _alcohol;
+	private double _malicAcid;
+	private double _ash;
+	private double _alcalityOfAsh;
+	private double _magnesium;
+	private double _totalPhenols;
+	private double _flavanoids;
+	private double _nonflavanoidPhenols;
+	private double _proanthocyanins;
+	private double _colorIntensity;
+	private double _hue;
+	private double _od280_315;
+	private double _proline;
+	
 	public Wine(double _class, double _alcohol, double _malicAcid, double _ash,
 			double _alcalityOfAsh, double _magnesium, double _totalPhenols,
 			double _flavanoids, double _nonflavanoidPhenols,
@@ -23,23 +37,37 @@ public class Wine {
 		this._od280_315 = _od280_315;
 		this._proline = _proline;
 	}
-
-	private double _alcohol;
-	private double _malicAcid;
-	private double _ash;
-	private double _alcalityOfAsh;
-	private double _magnesium;
-	private double _totalPhenols;
-	private double _flavanoids;
-	private double _nonflavanoidPhenols;
-	private double _proanthocyanins;
-	private double _colorIntensity;
-	private double _hue;
-	private double _od280_315;
-	private double _proline;
 	
-
+	public Wine(String[] data) {
+		this._class = Double.parseDouble(data[0]);
+		this._alcohol = Double.parseDouble(data[1]);
+		this._malicAcid = Double.parseDouble(data[2]);
+		this._ash = Double.parseDouble(data[3]);
+		this._alcalityOfAsh = Double.parseDouble(data[4]);
+		this._magnesium = Double.parseDouble(data[5]);
+		this._totalPhenols = Double.parseDouble(data[6]);
+		this._flavanoids = Double.parseDouble(data[7]);
+		this._nonflavanoidPhenols = Double.parseDouble(data[8]);
+		this._proanthocyanins = Double.parseDouble(data[9]);
+		this._colorIntensity = Double.parseDouble(data[10]);
+		this._hue = Double.parseDouble(data[11]);
+		this._od280_315 = Double.parseDouble(data[12]);
+		this._proline = Double.parseDouble(data[13]);
+	}
 	
+	@Override
+	public String toString() {
+		return "Wine [_class=" + _class + ", _alcohol=" + _alcohol
+				+ ", _malicAcid=" + _malicAcid + ", _ash=" + _ash
+				+ ", _alcalityOfAsh=" + _alcalityOfAsh + ", _magnesium="
+				+ _magnesium + ", _totalPhenols=" + _totalPhenols
+				+ ", _flavanoids=" + _flavanoids + ", _nonflavanoidPhenols="
+				+ _nonflavanoidPhenols + ", _proanthocyanins="
+				+ _proanthocyanins + ", _colorIntensity=" + _colorIntensity
+				+ ", _hue=" + _hue + ", _od280_315=" + _od280_315
+				+ ", _proline=" + _proline + "]";
+	}
+
 	public double get_class() {
 		return _class;
 	}

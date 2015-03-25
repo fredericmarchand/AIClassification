@@ -1,6 +1,7 @@
 package realdata;
 
 public class HeartDisease {
+	
 	private double _age;
 	private double _gender;
 	private double _cp;
@@ -35,6 +36,33 @@ public class HeartDisease {
 		this._ca = _ca;
 		this._thal = _thal;
 		this._class = _class;
+	}
+	
+	public HeartDisease(String[] data) {
+		this._age = Double.parseDouble(data[0]);
+		this._gender = Double.parseDouble(data[1]);
+		this._cp = Double.parseDouble(data[2]);
+		this._trestbps = Double.parseDouble(data[3]);
+		this._chol = Double.parseDouble(data[4]);
+		this._fbs = Double.parseDouble(data[5]);
+		this._restecg = Double.parseDouble(data[6]);
+		this._thalach = Double.parseDouble(data[7]);
+		this._exang = Double.parseDouble(data[8]);
+		this._oldpeak = Double.parseDouble(data[9]);
+		this._dlope = Double.parseDouble(data[10]);
+		this._ca = Double.parseDouble(data[11]);
+		this._thal = Double.parseDouble(data[12]);
+		this._class = Double.parseDouble(data[13]);
+	}
+	
+	@Override
+	public String toString() {
+		return "HeartDisease [_age=" + _age + ", _gender=" + _gender + ", _cp="
+				+ _cp + ", _trestbps=" + _trestbps + ", _chol=" + _chol
+				+ ", _fbs=" + _fbs + ", _restecg=" + _restecg + ", _thalach="
+				+ _thalach + ", _exang=" + _exang + ", _oldpeak=" + _oldpeak
+				+ ", _dlope=" + _dlope + ", _ca=" + _ca + ", _thal=" + _thal
+				+ ", _class=" + _class + "]";
 	}
 
 	public double get_age() {
