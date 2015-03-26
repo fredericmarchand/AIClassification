@@ -15,7 +15,7 @@ public class Edge {
 	
 	public Edge(Vertex v1, Vertex v2, double weight) {
 		super();
-		weight = 0.0;
+		this.weight = weight;
 		this.v1 = v1;
 		this.v2 = v2;
 	}

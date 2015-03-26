@@ -1,6 +1,7 @@
 package graph;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 
 public class Graph {
@@ -11,6 +12,23 @@ public class Graph {
 		super();
 		vertices = new ArrayList<Vertex>();
 		edges = new ArrayList<Edge>();
+	}
+	
+	public Graph(Graph g) {
+		super();
+		vertices = new ArrayList<Vertex>();
+		edges = new ArrayList<Edge>();
+		vertices.addAll(g.getVertices());
+		edges.addAll(g.getEdges());
+	}
+	
+	public Graph(Graph g, Edge e) {
+		super();
+		vertices = new ArrayList<Vertex>();
+		edges = new ArrayList<Edge>();
+		vertices.addAll(g.getVertices());
+		edges.addAll(g.getEdges());
+		this.addEdge(e);
 	}
 	
 	public ArrayList<Vertex> getVertices() {
@@ -24,6 +42,14 @@ public class Graph {
 	}
 	public void setEdges(ArrayList<Edge> edges) {
 		this.edges = edges;
+	}
+	
+	public Vertex getVertexByID(int id) {
+		for (Vertex v: vertices) {
+			if (v.getId() == id)
+				return v;
+		}
+		return null;
 	}
 	
 	public boolean containsVertex(Vertex v) {
@@ -58,6 +84,35 @@ public class Graph {
 		return ret;
 	}
 	
+	public HashSet<Integer> vertexConnections(Vertex v) {
+		HashSet<Integer> ids = new HashSet<Integer>();
+		
+		for (Edge e: edges) {
+			if (e.getV1().equals(v))
+				ids.add(e.getV2().getId());
+			else if (e.getV2().equals(v))
+				ids.add(e.getV1().getId());
+		}
+		return ids;
+	}
+	
+	public boolean parentInCommon(Vertex v1, Vertex v2) {
+		boolean ret = false;
+		HashSet<Integer> v1cons = this.vertexConnections(v1);
+		HashSet<Integer> v2cons = this.vertexConnections(v2);
+		
+		for (Integer i: v1cons) {
+			for (Integer j: v2cons) {
+				if (i.equals(j)) {
+					ret = true;
+					break;
+				}
+			}
+		}
+		
+		return ret;
+	}
+	
 	public void addEdge(Edge e) {
 		if (!containsEdge(e.getV1(), e.getV2())) {
 			edges.add(e);
@@ -69,24 +124,26 @@ public class Graph {
 	}
 	
 	public Graph maximumSpanningTree() {
-		Graph graph = new Graph();
+		Graph graph = new Graph(this);
 		Graph mst = new Graph();
 		
 		// Create fully connected graph
-		for (Vertex v: vertices) {
-			for (Vertex w: vertices) {
-				if (!v.equals(w)) {
-					graph.addEdge(new Edge(v, w));
-				}
-			}
-		}
+		//for (Vertex v: vertices) {
+		//	for (Vertex w: vertices) {
+		//		if (!v.equals(w)) {
+		//			graph.addEdge(new Edge(v, w));
+		//		}
+		//	}
+		//}
+		
+		
 		
 		//Weigh each edge
 		//simulation
-		Random r = new Random();
-		for (Edge e: graph.getEdges()) {
-			e.setWeight(r.nextDouble());
-		}
+		//Random r = new Random();
+		//for (Edge e: graph.getEdges()) {
+		//	e.setWeight(r.nextDouble());
+		//}
 		
 		//Remove all edges that aren't the highest weight connecting to a given vertex
 		Edge maxWeightEdge = null;
@@ -103,27 +160,8 @@ public class Graph {
 			maxWeightEdge = null;
 		
 			for (Edge e: graph.getEdges()) {
-	
-				if (!(mst.containsVertex(e.getV1()) && mst.containsVertex(e.getV2()))) {	
-					if (maxWeightEdge == null) {
-						maxWeightEdge = e;
-					}
-					else if (maxWeightEdge.getWeight() < e.getWeight()) {
-						maxWeightEdge = e;
-					}
-				}
-			}
-			if (maxWeightEdge != null) {
-				mst.addEdge(maxWeightEdge);
-			}
-		}
-		
-		while (mst.getEdges().size() < vertices.size()-1) {
-			maxWeightEdge = null;
-		
-			for (Edge e: graph.getEdges()) {
-	
-				if (!mst.containsEdge(e)) {	
+				Graph temp = new Graph(mst, e);
+				if (!mst.containsEdge(e) && !temp.isCyclic(this.vertices.size())) {	
 					if (maxWeightEdge == null) {
 						maxWeightEdge = e;
 					}
@@ -140,11 +178,55 @@ public class Graph {
 		return mst;
 	}
 	
+	private boolean[] visited;
+	private boolean isCyclicUtil(Vertex v, Vertex parent)
+	{
+	    // Mark the current node as visited
+	    visited[v.getId()] = true;
+	 
+	    // Recur for all the vertices adjacent to this vertex
+	    HashSet<Integer> cons = vertexConnections(v);
+	    for (Integer i: cons)
+	    {
+	        // If an adjacent is not visited, then recur for that adjacent
+	        if (!visited[i])
+	        {
+	           if (isCyclicUtil(getVertexByID(i), v))
+	              return true;
+	        }
+	 
+	        // If an adjacent is visited and not parent of current vertex,
+	        // then there is a cycle.
+	        else if (getVertexByID(i) != parent)
+	           return true;
+	    }
+	    return false;
+	}
+	 
+	// Returns true if the graph contains a cycle, else false.
+	public boolean isCyclic(int size)
+	{
+	    // Mark all the vertices as not visited and not part of recursion
+	    // stack
+	    visited = new boolean[size];
+	    for (int i = 0; i < size; i++)
+	        visited[i] = false;
+	 
+	    // Call the recursive helper function to detect cycle in different
+	    // DFS trees
+	    for (Vertex v: vertices)
+	        if (!visited[v.getId()]) // Don't recur for u if it is already visited
+	          if (isCyclicUtil(v, null))
+	             return true;
+	 
+	    return false;
+	}
+	
 	@Override
 	public String toString() {
 		String value = "";
 		for (Edge e: edges) {
-			value += "(" + e.getV1().getId() + "," + e.getV2().getId() + ")\n";
+			value += "(" + e.getV1().getId() + "," + e.getV2().getId() + "): " + e.getWeight() + "\n";
 		}
 		return value;
 	}
@@ -183,12 +265,12 @@ public class Graph {
 	
 	public static void main (String[] args) {
 		Graph g = new Graph();
-		Vertex v1 = new Vertex(1);
-		Vertex v2 = new Vertex(2);
-		Vertex v3 = new Vertex(3);
-		Vertex v4 = new Vertex(4);
-		Vertex v5 = new Vertex(5);
-		Vertex v6 = new Vertex(6);
+		Vertex v1 = new Vertex(0);
+		Vertex v2 = new Vertex(1);
+		Vertex v3 = new Vertex(2);
+		Vertex v4 = new Vertex(3);
+		Vertex v5 = new Vertex(4);
+		Vertex v6 = new Vertex(5);
 		g.addEdge(new Edge(v1, v2));
 		g.addEdge(new Edge(v1, v3));
 		g.addEdge(new Edge(v2, v4));
@@ -197,6 +279,7 @@ public class Graph {
 				
 		Graph mst = g.maximumSpanningTree();
 		System.out.println(mst.toString());
+		System.out.println(mst.isCyclic(g.getVertices().size()));
 	}
 	
 }

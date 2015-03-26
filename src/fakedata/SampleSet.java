@@ -45,19 +45,27 @@ public class SampleSet {
 		this.dimensions = dimensions;
 	}
 	
-	public int generateValue(double probability) {
-		double[] probs = { probability, 1-probability };
-		EnumeratedIntegerDistribution distribution = new EnumeratedIntegerDistribution(values, probs);
+	public int generateValue(Probability probability, int given) {
+		double[] probs0 = { probability.getProbability(), 1-probability.getProbability() };
+		double[] probs1 = { 1-probability.getProbability(), probability.getProbability() };
+		EnumeratedIntegerDistribution distribution = null;
+		if (given == 0)
+			distribution = new EnumeratedIntegerDistribution(values, probs0);
+		else if (given == 1)
+			distribution = new EnumeratedIntegerDistribution(values, probs1);
 		return distribution.sample();
 	}
 	
-	public void generateSample(double[] probabilities) {
+	public void generateSample(Probability[] probabilities, boolean indep) {
 		for (int i = 0; i < size; ++i) {
 			for (int j = 0; j < dimensions; ++j) {
-				samples[i].getVector()[j] = generateValue(probabilities[j]);
-				//System.out.print(samples[i][j] + " ");
+				if (indep || j == 0) {
+					samples[i].getVector()[j] = generateValue(probabilities[j], 0);
+				}
+				else {
+					samples[i].getVector()[j] = generateValue(probabilities[j], samples[i].getVector()[j-1]);
+				}
 			}
-			//System.out.println();
 		}		
 	}
 
@@ -104,9 +112,18 @@ public class SampleSet {
 	public static void main(String[] args) {
 		SampleSet s = new SampleSet(2000, 10);
 		
-		double[] probs = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.1 };
+		Probability[] probs = { new Probability(0.1), 
+								new Probability(0.2), 
+								new Probability(0.3), 
+								new Probability(0.4), 
+								new Probability(0.5), 
+								new Probability(0.6),
+								new Probability(0.7), 
+								new Probability(0.8), 
+								new Probability(0.9), 
+								new Probability(0.1) };
 		
-		s.generateSample(probs);
+		s.generateSample(probs, false);
 		double[] estProbs = s.getEstimatedProbabilities(0, 8);
 		
 		double classProbability = 1.0;
