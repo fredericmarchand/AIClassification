@@ -72,7 +72,6 @@ public class SampleSet {
 	public double[] getEstimatedProbabilities(int f, int fold) {
 		int chunkSize = size / fold;
 		int trainingSize = ((fold - 1) * chunkSize);
-		//System.out.println(trainingSize);
 		
 		double zeroCounts[] = new double[dimensions];
 		//perform training
@@ -96,7 +95,6 @@ public class SampleSet {
 	
 	public ArrayList<Sample> getTestingSet(int f, int fold) {
 		int testingSize = size / fold;
-		//System.out.println(testingSize);
 		ArrayList<Sample> samples = new ArrayList<Sample>();
 		
 		//For each sample

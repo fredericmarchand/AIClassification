@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class App {
+	
+	public static final boolean INDEP = true;
+	public static final boolean DEPEN = false;
 
 	public static double roundToDecimals(double d, int c) {   
 		int temp = (int)(d * Math.pow(10 , c));  
@@ -22,6 +25,41 @@ public class App {
 				probability *= estimatedProbs[d];
 			else
 				probability *= (1 - estimatedProbs[d]);
+		}
+		
+		return probability;
+	}
+	
+	public static double getSampleProbabilityDependent(Sample sample, double estimatedProbs[], int dimensions) {
+		double probability = 1.0;
+		
+		for (int d = 0; d < dimensions; ++d) {
+			if (sample.getVector()[d] == 0) {
+				if (d != 0) {
+					if (sample.getVector()[d-1] == 0) {
+						probability *= estimatedProbs[d];
+					}
+					else {
+						probability *= (1-estimatedProbs[d]);
+					}
+				}
+				else {
+					probability *= estimatedProbs[d];
+				}
+			}
+			else {
+				if (d != 0) {
+					if (sample.getVector()[d-1] == 0) {
+						probability *= (1-estimatedProbs[d]);
+					}
+					else {
+						probability *= estimatedProbs[d];
+					}
+				}
+				else {
+					probability *= (1-estimatedProbs[d]);
+				}
+			}
 		}
 		
 		return probability;
@@ -96,10 +134,11 @@ public class App {
 		
 		for (int i = 0; i < c; ++i) {
 			samples[i] = new SampleSet(2000, d);
-			samples[i].generateSample(initialProbabilities[i], false);
+			samples[i].generateSample(initialProbabilities[i], DEPEN);
 		}
 		
 		//cross-validation
+		System.out.println("INDEPENDENT CLASSIFICATION");
 		for (int f = 0; f < fold; ++f) {
 		
 			double[][] estimatedProbabilities = new double[c][d];
@@ -120,7 +159,7 @@ public class App {
 				int class2 = 0;
 				int class3 = 0;
 				int class4 = 0;
-				//System.out.println(list.size());
+
 				for (Sample sample: list) {
 					//classify
 					double prob1 = getSampleProbability(sample, estimatedProbabilities[0], d);
@@ -153,6 +192,60 @@ public class App {
 			testingSets.clear();
 		}
 		
+		System.out.println("DEPENDENT CLASSIFICATION");
+		for (int f = 0; f < fold; ++f) {
+		
+			double[][] estimatedProbabilities = new double[c][d];
+			for (int i = 0; i < c; ++i) {
+				estimatedProbabilities[i] = samples[i].getEstimatedProbabilities(f, fold);
+			}
+			
+			//testing 
+			
+			//get testing sets
+			for (int i = 0; i < c; ++i) {
+				testingSets.add(samples[i].getTestingSet(f, fold));
+			}
+			
+			//for each sample in each classes test set
+			for (ArrayList<Sample> list: testingSets) {
+				int class1 = 0;
+				int class2 = 0;
+				int class3 = 0;
+				int class4 = 0;
+				//System.out.println(list.size());
+				for (Sample sample: list) {
+					//classify
+					double prob1 = getSampleProbabilityDependent(sample, estimatedProbabilities[0], d);
+					double prob2 = getSampleProbabilityDependent(sample, estimatedProbabilities[1], d);
+					double prob3 = getSampleProbabilityDependent(sample, estimatedProbabilities[2], d);
+					double prob4 = getSampleProbabilityDependent(sample, estimatedProbabilities[3], d);
+					double max = Double.max(prob4, Double.max(prob3, Double.max(prob1, prob2)));
+					if (max == prob1) {
+						sample.set_class(1);
+						class1++;
+					}
+					else if (max == prob2) {
+						sample.set_class(2);
+						class2++;
+					}
+					else if (max == prob3) {
+						sample.set_class(3);
+						class3++;
+					}
+					else if (max == prob4) {
+						sample.set_class(4);
+						class4++;
+					}
+				}
+				System.out.println("Class1: " + class1 + "/250");
+				System.out.println("Class2: " + class2 + "/250");
+				System.out.println("Class3: " + class3 + "/250");
+				System.out.println("Class4: " + class4 + "/250\n");
+			}	
+			testingSets.clear();
+		}
+	
 		Graph g1 = assignWeights(samples[0], d);
 		Graph g2 = assignWeights(samples[1], d);
 		Graph g3 = assignWeights(samples[2], d);

@@ -2,7 +2,6 @@ package graph;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Random;
 
 public class Graph {
 	private ArrayList<Vertex> vertices;
@@ -94,23 +93,6 @@ public class Graph {
 				ids.add(e.getV1().getId());
 		}
 		return ids;
-	}
-	
-	public boolean parentInCommon(Vertex v1, Vertex v2) {
-		boolean ret = false;
-		HashSet<Integer> v1cons = this.vertexConnections(v1);
-		HashSet<Integer> v2cons = this.vertexConnections(v2);
-		
-		for (Integer i: v1cons) {
-			for (Integer j: v2cons) {
-				if (i.equals(j)) {
-					ret = true;
-					break;
-				}
-			}
-		}
-		
-		return ret;
 	}
 	
 	public void addEdge(Edge e) {
