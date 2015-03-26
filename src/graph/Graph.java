@@ -1,6 +1,7 @@
 package graph;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Graph {
 	private ArrayList<Vertex> vertices;
@@ -46,6 +47,17 @@ public class Graph {
 		return ret;
 	}
 	
+	public boolean containsEdge(Edge edge) {
+		boolean ret = false;
+		for (Edge e: edges) {
+			if (e.getV1().equals(edge.getV1()) && e.getV2().equals(edge.getV2()) || e.getV1().equals(edge.getV2()) && e.getV2().equals(edge.getV1())) {
+				ret = true;
+				break;
+			}
+		}
+		return ret;
+	}
+	
 	public void addEdge(Edge e) {
 		if (!containsEdge(e.getV1(), e.getV2())) {
 			edges.add(e);
@@ -58,20 +70,83 @@ public class Graph {
 	
 	public Graph maximumSpanningTree() {
 		Graph graph = new Graph();
+		Graph mst = new Graph();
+		
 		// Create fully connected graph
 		for (Vertex v: vertices) {
 			for (Vertex w: vertices) {
 				if (!v.equals(w)) {
 					graph.addEdge(new Edge(v, w));
-					break;
 				}
 			}
 		}
 		
 		//Weigh each edge
-		//Remove all edges that aren't the highest weight connecting to a given vertex
+		//simulation
+		Random r = new Random();
+		for (Edge e: graph.getEdges()) {
+			e.setWeight(r.nextDouble());
+		}
 		
-		return graph;
+		//Remove all edges that aren't the highest weight connecting to a given vertex
+		Edge maxWeightEdge = null;
+		for (Edge e: graph.getEdges()) {
+			if (maxWeightEdge == null)
+				maxWeightEdge = e;
+			else if (maxWeightEdge.getWeight() < e.getWeight())
+				maxWeightEdge = e;
+		}
+		mst.addEdge(maxWeightEdge);
+
+		int index = 0;
+		while (index++ < vertices.size()) {
+			maxWeightEdge = null;
+		
+			for (Edge e: graph.getEdges()) {
+	
+				if (!(mst.containsVertex(e.getV1()) && mst.containsVertex(e.getV2()))) {	
+					if (maxWeightEdge == null) {
+						maxWeightEdge = e;
+					}
+					else if (maxWeightEdge.getWeight() < e.getWeight()) {
+						maxWeightEdge = e;
+					}
+				}
+			}
+			if (maxWeightEdge != null) {
+				mst.addEdge(maxWeightEdge);
+			}
+		}
+		
+		while (mst.getEdges().size() < vertices.size()-1) {
+			maxWeightEdge = null;
+		
+			for (Edge e: graph.getEdges()) {
+	
+				if (!mst.containsEdge(e)) {	
+					if (maxWeightEdge == null) {
+						maxWeightEdge = e;
+					}
+					else if (maxWeightEdge.getWeight() < e.getWeight()) {
+						maxWeightEdge = e;
+					}
+				}
+			}
+			if (maxWeightEdge != null) {
+				mst.addEdge(maxWeightEdge);
+			}
+		}
+		
+		return mst;
+	}
+	
+	@Override
+	public String toString() {
+		String value = "";
+		for (Edge e: edges) {
+			value += "(" + e.getV1().getId() + "," + e.getV2().getId() + ")\n";
+		}
+		return value;
 	}
 	
 	@Override
@@ -104,6 +179,24 @@ public class Graph {
 		} else if (!vertices.equals(other.vertices))
 			return false;
 		return true;
+	}
+	
+	public static void main (String[] args) {
+		Graph g = new Graph();
+		Vertex v1 = new Vertex(1);
+		Vertex v2 = new Vertex(2);
+		Vertex v3 = new Vertex(3);
+		Vertex v4 = new Vertex(4);
+		Vertex v5 = new Vertex(5);
+		Vertex v6 = new Vertex(6);
+		g.addEdge(new Edge(v1, v2));
+		g.addEdge(new Edge(v1, v3));
+		g.addEdge(new Edge(v2, v4));
+		g.addEdge(new Edge(v3, v5));
+		g.addEdge(new Edge(v3, v6));
+				
+		Graph mst = g.maximumSpanningTree();
+		System.out.println(mst.toString());
 	}
 	
 }

@@ -4,9 +4,18 @@ public class Edge {
 
 	private Vertex v1;
 	private Vertex v2;
+	private double weight;
 	
 	public Edge(Vertex v1, Vertex v2) {
 		super();
+		weight = 0.0;
+		this.v1 = v1;
+		this.v2 = v2;
+	}
+	
+	public Edge(Vertex v1, Vertex v2, double weight) {
+		super();
+		weight = 0.0;
 		this.v1 = v1;
 		this.v2 = v2;
 	}
@@ -25,6 +34,14 @@ public class Edge {
 
 	public void setV2(Vertex v2) {
 		this.v2 = v2;
+	}
+	
+	public double getWeight() {
+		return weight;
+	}
+
+	public void setWeight(double weight) {
+		this.weight = weight;
 	}
 
 	public boolean containsVertex(Vertex v) {
