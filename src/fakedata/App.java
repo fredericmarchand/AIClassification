@@ -153,10 +153,18 @@ public class App {
 			testingSets.clear();
 		}
 		
-		Graph g = assignWeights(samples[0], d);
-		System.out.println(g.toString());
-		Graph mst = g.maximumSpanningTree();
-		System.out.println(mst.toString());
-		//System.out.println(mst.isCyclic());
+		Graph g1 = assignWeights(samples[0], d);
+		Graph g2 = assignWeights(samples[1], d);
+		Graph g3 = assignWeights(samples[2], d);
+		Graph g4 = assignWeights(samples[3], d);
+		Graph mst1 = g1.maximumSpanningTree();
+		Graph mst2 = g2.maximumSpanningTree();
+		Graph mst3 = g3.maximumSpanningTree();
+		Graph mst4 = g4.maximumSpanningTree();
+		System.out.println(g1.toString());
+		System.out.println(mst1.toString());
+		System.out.println(mst2.toString());
+		System.out.println(mst3.toString());
+		System.out.println(mst4.toString());
 	}
 }
