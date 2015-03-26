@@ -64,7 +64,7 @@ public class SampleSet {
 	public double[] getEstimatedProbabilities(int f, int fold) {
 		int chunkSize = size / fold;
 		int trainingSize = ((fold - 1) * chunkSize);
-		System.out.println(trainingSize);
+		//System.out.println(trainingSize);
 		
 		double zeroCounts[] = new double[dimensions];
 		//perform training
@@ -88,36 +88,17 @@ public class SampleSet {
 	
 	public ArrayList<Sample> getTestingSet(int f, int fold) {
 		int testingSize = size / fold;
-		System.out.println(testingSize);
+		//System.out.println(testingSize);
 		ArrayList<Sample> samples = new ArrayList<Sample>();
 		
 		//For each sample
 		for (int i = 0; i < size; ++i) {
-			//for each value in the vector
-			for (int j = 0; j < dimensions; ++j) {
-				//If within the training set
-				if (i >= (f * testingSize) && i <= ((f+1) * testingSize)) {
-					if (this.samples[i].getVector()[j] == 0) 
-						samples.add(new Sample(this.samples[i]));
-				}
+			//If within the training set
+			if (i >= (f * testingSize) && i < ((f+1) * testingSize)) {
+					samples.add(this.samples[i]);
 			}
 		}
 		return samples;	
-	}
-	
-	public double getSampleProbability(int sampleIndex, double estimatedProbs[]) {
-		double probability = 1.0;
-		
-		for (int d = 0; d < dimensions; ++d) {
-			// P(Xi = 0 | W1)
-			
-			if (samples[sampleIndex].getVector()[d] == 0)
-				probability *= estimatedProbs[d];
-			else
-				probability *= (1 - estimatedProbs[d]);
-		}
-		
-		return probability;
 	}
 	
 	public static void main(String[] args) {

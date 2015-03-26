@@ -7,9 +7,11 @@ public class Sample {
 	private double probability;
 	private int vector[];
 	private int dimensions;
+	private int _class;
 	
 	public Sample(int dimensions) {
 		super();
+		_class = 0;
 		this.probability = 0.0;
 		this.vector = new int[dimensions];
 		this.dimensions = dimensions;
@@ -17,6 +19,7 @@ public class Sample {
 	
 	public Sample(int dimensions, int vector[]) {
 		super();
+		_class = 0;
 		this.probability = 0.0;
 		this.vector = vector;
 		this.dimensions = dimensions;
@@ -24,6 +27,7 @@ public class Sample {
 	
 	public Sample(Sample s) {
 		super();
+		_class = 0;
 		this.probability = 0.0;
 		this.vector = s.vector;
 		this.dimensions = s.dimensions;
@@ -88,6 +92,14 @@ public class Sample {
 		if (!Arrays.equals(vector, other.vector))
 			return false;
 		return true;
+	}
+
+	public int get_class() {
+		return _class;
+	}
+
+	public void set_class(int _class) {
+		this._class = _class;
 	}
 	
 }
