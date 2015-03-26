@@ -27,6 +27,14 @@ public class Edge {
 		this.v2 = v2;
 	}
 
+	public boolean containsVertex(Vertex v) {
+		if (v1.equals(v))
+			return true;
+		if (v2.equals(v))
+			return true;
+		return false;
+	}
+	
 	@Override
 	public String toString() {
 		return "Edge [v1=" + v1 + ", v2=" + v2 + "]";

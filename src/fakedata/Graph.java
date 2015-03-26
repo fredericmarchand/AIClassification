@@ -25,6 +25,55 @@ public class Graph {
 		this.edges = edges;
 	}
 	
+	public boolean containsVertex(Vertex v) {
+		boolean ret = false;
+		for (Vertex w: vertices) {
+			if (w.equals(v)) {
+				ret = true;
+			}
+		}
+		return ret;
+	}
+	
+	public boolean containsEdge(Vertex v1, Vertex v2) {
+		boolean ret = false;
+		for (Edge e: edges) {
+			if (e.getV1().equals(v1) && e.getV2().equals(v2) || e.getV1().equals(v2) && e.getV2().equals(v1)) {
+				ret = true;
+				break;
+			}
+		}
+		return ret;
+	}
+	
+	public void addEdge(Edge e) {
+		if (!containsEdge(e.getV1(), e.getV2())) {
+			edges.add(e);
+			if (!containsVertex(e.getV1()))
+				vertices.add(e.getV1());
+			if (!containsVertex(e.getV2()))
+				vertices.add(e.getV2());
+		}
+	}
+	
+	public Graph maximumSpanningTree() {
+		Graph graph = new Graph();
+		// Create fully connected graph
+		for (Vertex v: vertices) {
+			for (Vertex w: vertices) {
+				if (!v.equals(w)) {
+					graph.addEdge(new Edge(v, w));
+					break;
+				}
+			}
+		}
+		
+		//Weigh each edge
+		//Remove all edges that aren't the highest weight connecting to a given vertex
+		
+		return graph;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

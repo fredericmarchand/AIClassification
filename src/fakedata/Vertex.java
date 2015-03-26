@@ -4,9 +4,11 @@ public class Vertex {
 
 	private int id;
 	private double probability;
+	private double weight;
 	
 	public Vertex(int id, double probability) {
 		super();
+		setWeight(0);
 		this.id = id;
 		this.probability = probability;
 	}
@@ -25,6 +27,14 @@ public class Vertex {
 
 	public void setProbability(double probability) {
 		this.probability = probability;
+	}
+
+	public double getWeight() {
+		return weight;
+	}
+
+	public void setWeight(double weight) {
+		this.weight = weight;
 	}
 
 	@Override
