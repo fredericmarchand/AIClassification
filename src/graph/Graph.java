@@ -1,4 +1,4 @@
-package fakedata;
+package graph;
 
 import java.util.ArrayList;
 
