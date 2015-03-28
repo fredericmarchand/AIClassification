@@ -1,4 +1,4 @@
-package fakedata;
+package statistics;
 
 import java.util.ArrayList;
 
@@ -37,6 +37,10 @@ public class SampleSet {
 		this.samples = samples;
 	}
 	
+	public void setSample(int index, Sample sample) {
+		this.samples[index] = sample;
+	}
+	
 	public int getDimensions() {
 		return dimensions;
 	}
@@ -67,6 +71,24 @@ public class SampleSet {
 				}
 			}
 		}		
+	}
+	
+	public double[] getProbabilities(int c) {
+		double zeroCounts[] = new double[dimensions];
+		
+		//For each sample
+		for (int i = 0; i < size; ++i) {
+			//for each value in the vector
+			for (int j = 0; j < dimensions; ++j) {
+				if (c == samples[i].getGivenClass()) {
+					if (samples[i].getVector()[j] == 0) {
+						zeroCounts[j]++;
+					}
+				}
+			}
+		}
+
+		return zeroCounts;	
 	}
 
 	public double[] getEstimatedProbabilities(int f, int fold) {

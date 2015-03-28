@@ -2,6 +2,8 @@ package realdata;
 
 import java.util.ArrayList;
 
+import statistics.Sample;
+
 public class HeartDisease extends Data {
 	
 	private double _age;
@@ -179,37 +181,35 @@ public class HeartDisease extends Data {
 		this._class = _class;
 	}
 	
-	public static ArrayList<Integer> getThresholds(ArrayList<Data> list) {
-		ArrayList<Integer> thresholds = new ArrayList<Integer>();
-		int a = 0;
-		int b = 0;
-		int c = 0;
-		int d = 0;
-		int e = 0;
-		int f = 0;
-		int g = 0;
-		int h = 0;
-		int i = 0;
-		int j = 0;
-		int k = 0;
-		int l = 0;
-		int m = 0;
-		int n = 0;
+	public static ArrayList<Double> getThresholds(ArrayList<Data> list) {
+		ArrayList<Double> thresholds = new ArrayList<Double>();
+		double a = 0;
+		double b = 0;
+		double c = 0;
+		double d = 0;
+		double e = 0;
+		double f = 0;
+		double g = 0;
+		double h = 0;
+		double i = 0;
+		double j = 0;
+		double k = 0;
+		double l = 0;
+		double m = 0;
 		for (Data hd: list) {
 			a += ((HeartDisease)hd).get_age();     
 			b += ((HeartDisease)hd).get_gender();  
 			c += ((HeartDisease)hd).get_cp();      
 			d += ((HeartDisease)hd).get_trestbps();
-			d += ((HeartDisease)hd).get_chol();    
-			d += ((HeartDisease)hd).get_fbs();     
-			d += ((HeartDisease)hd).get_restecg(); 
-			d += ((HeartDisease)hd).get_thalach(); 
-			d += ((HeartDisease)hd).get_exang();   
-			d += ((HeartDisease)hd).get_oldpeak(); 
-			d += ((HeartDisease)hd).get_dlope();   
-			d += ((HeartDisease)hd).get_ca();      
-			d += ((HeartDisease)hd).get_thal();    
-			d += ((HeartDisease)hd).get_class();   
+			e += ((HeartDisease)hd).get_chol();    
+			f += ((HeartDisease)hd).get_fbs();     
+			g += ((HeartDisease)hd).get_restecg(); 
+			h += ((HeartDisease)hd).get_thalach(); 
+			i += ((HeartDisease)hd).get_exang();   
+			j += ((HeartDisease)hd).get_oldpeak(); 
+			k += ((HeartDisease)hd).get_dlope();   
+			l += ((HeartDisease)hd).get_ca();      
+			m += ((HeartDisease)hd).get_thal();    
 		}
 		thresholds.add(a /= list.size());
 		thresholds.add(b /= list.size());
@@ -224,13 +224,12 @@ public class HeartDisease extends Data {
 		thresholds.add(k /= list.size());
 		thresholds.add(l /= list.size());
 		thresholds.add(m /= list.size());
-		thresholds.add(n /= list.size());
 		
 		return thresholds;
 	}
 
 	@Override
-	public void convertToBinary(ArrayList<Integer> thresh) {
+	public void convertToBinary(ArrayList<Double> thresh) {
 		if (_age < thresh.get(0)) {
 			_age = 0;
 		}
@@ -321,13 +320,31 @@ public class HeartDisease extends Data {
 		else {
 			_thal = 1;
 		}
+	}
+
+	@Override
+	public Sample toSample() {
+		int[] data = new int[getDimensions()];
+		data[0] = (int)_age;      
+		data[1] = (int)_gender;   
+		data[2] = (int)_cp;       
+		data[3] = (int)_trestbps; 
+		data[4] = (int)_chol;     
+		data[5] = (int)_fbs;      
+		data[6] = (int)_restecg;  
+		data[7] = (int)_thalach;  
+		data[8] = (int)_exang;    
+		data[9] = (int)_oldpeak;  
+		data[10] = (int)_dlope;      
+		data[11] = (int)_ca;         
+		data[12] = (int)_thal;       
 		
-		if (_class < thresh.get(13)) {
-			_class = 0;
-		}
-		else {
-			_class = 1;
-		}
+		return new Sample(getDimensions(), data, (int)_class);
+	}
+
+	@Override
+	public int getDimensions() {
+		return 13;
 	}
 	
 }

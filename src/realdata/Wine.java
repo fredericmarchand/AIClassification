@@ -2,6 +2,8 @@ package realdata;
 
 import java.util.ArrayList;
 
+import statistics.Sample;
+
 public class Wine extends Data {
 	private double _class;
 	private double _alcohol;
@@ -182,37 +184,35 @@ public class Wine extends Data {
 		this._proline = _proline;
 	}
 	
-	public static ArrayList<Integer> getThresholds(ArrayList<Data> list) {
-		ArrayList<Integer> thresholds = new ArrayList<Integer>();
-		int a = 0;
-		int b = 0;
-		int c = 0;
-		int d = 0;
-		int e = 0;
-		int f = 0;
-		int g = 0;
-		int h = 0;
-		int i = 0;
-		int j = 0;
-		int k = 0;
-		int l = 0;
-		int m = 0;
-		int n = 0;
+	public static ArrayList<Double> getThresholds(ArrayList<Data> list) {
+		ArrayList<Double> thresholds = new ArrayList<Double>();
+		double a = 0;
+		double b = 0;
+		double c = 0;
+		double d = 0;
+		double e = 0;
+		double f = 0;
+		double g = 0;
+		double h = 0;
+		double i = 0;
+		double j = 0;
+		double k = 0;
+		double l = 0;
+		double m = 0;
 		for (Data w: list) {
-			a += ((Wine)w).get_class();               
-			b += ((Wine)w).get_alcohol();             
-			c += ((Wine)w).get_malicAcid();           
-			d += ((Wine)w).get_ash();                 
+			a += ((Wine)w).get_alcohol();             
+			b += ((Wine)w).get_malicAcid();           
+			c += ((Wine)w).get_ash();                 
 			d += ((Wine)w).get_alcalityOfAsh();       
-			d += ((Wine)w).get_magnesium();           
-			d += ((Wine)w).get_totalPhenols();        
-			d += ((Wine)w).get_flavanoids();          
-			d += ((Wine)w).get_nonflavanoidPhenols(); 
-			d += ((Wine)w).get_proanthocyanins();     
-			d += ((Wine)w).get_colorIntensity();      
-			d += ((Wine)w).get_hue();                 
-			d += ((Wine)w).get_od280_315();           
-			d += ((Wine)w).get_proline();             
+			e += ((Wine)w).get_magnesium();           
+			f += ((Wine)w).get_totalPhenols();        
+			g += ((Wine)w).get_flavanoids();          
+			h += ((Wine)w).get_nonflavanoidPhenols(); 
+			i += ((Wine)w).get_proanthocyanins();     
+			j += ((Wine)w).get_colorIntensity();      
+			k += ((Wine)w).get_hue();                 
+			l += ((Wine)w).get_od280_315();           
+			m += ((Wine)w).get_proline();             
 		}
 		thresholds.add(a /= list.size());
 		thresholds.add(b /= list.size());
@@ -227,109 +227,126 @@ public class Wine extends Data {
 		thresholds.add(k /= list.size());
 		thresholds.add(l /= list.size());
 		thresholds.add(m /= list.size());
-		thresholds.add(n /= list.size());
 		
 		return thresholds;
 	}
 
 	@Override
-	public void convertToBinary(ArrayList<Integer> thresh) {
-		if (_class < thresh.get(0)) {
-			_class = 0;
-		}
-		else {
-			_class = 1;
-		}
-		
-		if (_alcohol < thresh.get(1)) {
+	public void convertToBinary(ArrayList<Double> thresh) {
+		if (_alcohol < thresh.get(0)) {
 			_alcohol = 0;
 		}
 		else {
 			_alcohol = 1;
 		}
 		
-		if (_malicAcid < thresh.get(2)) {
+		if (_malicAcid < thresh.get(1)) {
 			_malicAcid = 0;
 		}
 		else {
 			_malicAcid = 1;
 		}
 		
-		if (_ash < thresh.get(3)) {
+		if (_ash < thresh.get(2)) {
 			_ash = 0;
 		}
 		else {
 			_ash = 1;
 		}
 		
-		if (_alcalityOfAsh < thresh.get(4)) {
+		if (_alcalityOfAsh < thresh.get(3)) {
 			_alcalityOfAsh = 0;
 		}
 		else {
 			_alcalityOfAsh = 1;
 		}
 		
-		if (_magnesium < thresh.get(5)) {
+		if (_magnesium < thresh.get(4)) {
 			_magnesium = 0;
 		}
 		else {
 			_magnesium = 1;
 		}
 		
-		if (_totalPhenols < thresh.get(6)) {
+		if (_totalPhenols < thresh.get(5)) {
 			_totalPhenols = 0;
 		}
 		else {
 			_totalPhenols = 1;
 		}
 		
-		if (_flavanoids < thresh.get(7)) {
+		if (_flavanoids < thresh.get(6)) {
 			_flavanoids = 0;
 		}
 		else {
 			_flavanoids = 1;
 		}
 		
-		if (_nonflavanoidPhenols < thresh.get(8)) {
+		if (_nonflavanoidPhenols < thresh.get(7)) {
 			_nonflavanoidPhenols = 0;
 		}
 		else {
 			_nonflavanoidPhenols = 1;
 		}
 		
-		if (_proanthocyanins < thresh.get(9)) {
+		if (_proanthocyanins < thresh.get(8)) {
 			_proanthocyanins = 0;
 		}
 		else {
 			_proanthocyanins = 1;
 		}
 		
-		if (_colorIntensity < thresh.get(10)) {
+		if (_colorIntensity < thresh.get(9)) {
 			_colorIntensity = 0;
 		}
 		else {
 			_colorIntensity = 1;
 		}
 		
-		if (_hue < thresh.get(11)) {
+		if (_hue < thresh.get(10)) {
 			_hue = 0;
 		}
 		else {
 			_hue = 1;
 		}
 		
-		if (_od280_315 < thresh.get(12)) {
+		if (_od280_315 < thresh.get(11)) {
 			_od280_315 = 0;
 		}
 		else {
 			_od280_315 = 1;
 		}
 		
-		if (_proline < thresh.get(13)) {
+		if (_proline < thresh.get(12)) {
 			_proline = 0;
 		}
 		else {
 			_proline = 1;
 		}
+	}
+
+	@Override
+	public Sample toSample() {
+		int[] data = new int[getDimensions()];            
+		data[0] = (int)_alcohol;             
+		data[1] = (int)_malicAcid;           
+		data[2] = (int)_ash;                 
+		data[3] = (int)_alcalityOfAsh;       
+		data[4] = (int)_magnesium;           
+		data[5] = (int)_totalPhenols;        
+		data[6] = (int)_flavanoids;          
+		data[7] = (int)_nonflavanoidPhenols; 
+		data[8] = (int)_proanthocyanins;     
+		data[9] = (int)_colorIntensity;      
+		data[10] = (int)_hue;                 
+		data[11] = (int)_od280_315;           
+		data[12] = (int)_proline;             
+		
+		return new Sample(getDimensions(), data, (int)_class);
+	}
+
+	@Override
+	public int getDimensions() {
+		return 13;
 	}
 }

@@ -1,4 +1,4 @@
-package fakedata;
+package statistics;
 
 import java.util.Arrays;
 
@@ -8,6 +8,7 @@ public class Sample {
 	private int vector[];
 	private int dimensions;
 	private int _class;
+	private int givenClass;
 	
 	public Sample(int dimensions) {
 		super();
@@ -20,6 +21,15 @@ public class Sample {
 	public Sample(int dimensions, int vector[]) {
 		super();
 		_class = 0;
+		this.probability = 0.0;
+		this.vector = vector;
+		this.dimensions = dimensions;
+	}
+	
+	public Sample(int dimensions, int vector[], int given) {
+		super();
+		_class = 0;
+		givenClass = given;
 		this.probability = 0.0;
 		this.vector = vector;
 		this.dimensions = dimensions;
@@ -100,6 +110,10 @@ public class Sample {
 
 	public void set_class(int _class) {
 		this._class = _class;
+	}
+
+	public int getGivenClass() {
+		return givenClass;
 	}
 	
 }

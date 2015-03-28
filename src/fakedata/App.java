@@ -1,114 +1,21 @@
 package fakedata;
 
-import graph.Edge;
 import graph.Graph;
-import graph.Vertex;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import statistics.Probability;
+import statistics.Sample;
+import statistics.SampleSet;
+import statistics.Utils;
 
 public class App {
 	
 	public static final boolean INDEP = true;
 	public static final boolean DEPEN = false;
 
-	public static double roundToDecimals(double d, int c) {   
-		int temp = (int)(d * Math.pow(10 , c));  
-		return ((double)temp)/Math.pow(10 , c);  
-	}
 	
-	public static double getSampleProbability(Sample sample, double estimatedProbs[], int dimensions) {
-		double probability = 1.0;
-		
-		for (int d = 0; d < dimensions; ++d) {
-			if (sample.getVector()[d] == 0)
-				probability *= estimatedProbs[d];
-			else
-				probability *= (1 - estimatedProbs[d]);
-		}
-		
-		return probability;
-	}
-	
-	public static double getSampleProbabilityDependent(Sample sample, double estimatedProbs[], int dimensions) {
-		double probability = 1.0;
-		
-		for (int d = 0; d < dimensions; ++d) {
-			if (sample.getVector()[d] == 0) {
-				if (d != 0) {
-					if (sample.getVector()[d-1] == 0) {
-						probability *= estimatedProbs[d];
-					}
-					else {
-						probability *= (1-estimatedProbs[d]);
-					}
-				}
-				else {
-					probability *= estimatedProbs[d];
-				}
-			}
-			else {
-				if (d != 0) {
-					if (sample.getVector()[d-1] == 0) {
-						probability *= (1-estimatedProbs[d]);
-					}
-					else {
-						probability *= estimatedProbs[d];
-					}
-				}
-				else {
-					probability *= (1-estimatedProbs[d]);
-				}
-			}
-		}
-		
-		return probability;
-	}
-	
-	public static Graph assignWeights(SampleSet samples, int dim) {
-		double [] zeroCounts = new double[dim];
-		double [] oneCounts = new double[dim];
-		
-		Graph graph = new Graph();
-		
-		for (Sample sample: samples.getSamples()) {
-			for (int i = 0; i < dim; ++i) {
-				if (sample.getVector()[i] == 0) 
-					zeroCounts[i]++;
-				else
-					oneCounts[i]++;
-			}
-		}
-		
-		for (int i = 0; i < dim; ++i) {
-			
-			for (int j = 0; j < dim; ++j) {
-				if (i == j)
-					continue;
-				double weight = 0.0;
-				 for (int z = 0; z <= 1; ++z) {
-					 for (int o = 0; o <= 1; ++o) {
-						 double comboCounts = 0.0;
-						 
-						 for (Sample sample: samples.getSamples()) {
-							 if (sample.getVector()[i] == z &&
-								 sample.getVector()[j] == o)
-								 comboCounts++;
-						 }
-						 
-						 double vi = (z == 0 ? zeroCounts[i] : oneCounts[i]);
-						 double vj = (o == 0 ? zeroCounts[j] : oneCounts[j]);
-						 //System.out.println("(" + i + "," + j + "):(" + z + "," + o + ")" + vi/2000 + " " + vj/2000 + " " + comboCounts/2000);
-						 
-						 weight += ((comboCounts/2000) * Math.log((comboCounts/2000)/((vi/2000) * (vj/2000))));
-					 }
-				 }
-				 graph.addEdge(new Edge(new Vertex(i), new Vertex(j), weight));
-			}
-		}
-		
-		return graph;
-	}
 	
 	//Assumption: probabilities given parent=1 are 1-probability
 	//Assumption: trees are linear the root is the start of the list and the parent of each is the one with index-1
@@ -123,7 +30,7 @@ public class App {
 		
 		for (int j = 0; j < c; ++j) {
 			for (int i = 0; i < d; ++i) {
-				double prob = roundToDecimals(r.nextDouble() % 1, 2);
+				double prob = Utils.roundToDecimals(r.nextDouble() % 1, 2);
 				if (prob == 0.5)
 					prob += 0.01;
 				initialProbabilities[j][i] = new Probability(prob);
@@ -155,39 +62,28 @@ public class App {
 			
 			//for each sample in each classes test set
 			for (ArrayList<Sample> list: testingSets) {
-				int class1 = 0;
-				int class2 = 0;
-				int class3 = 0;
-				int class4 = 0;
-
+				int[] counts = new int[c];
+				
 				for (Sample sample: list) {
 					//classify
-					double prob1 = getSampleProbability(sample, estimatedProbabilities[0], d);
-					double prob2 = getSampleProbability(sample, estimatedProbabilities[1], d);
-					double prob3 = getSampleProbability(sample, estimatedProbabilities[2], d);
-					double prob4 = getSampleProbability(sample, estimatedProbabilities[3], d);
-					double max = Double.max(prob4, Double.max(prob3, Double.max(prob1, prob2)));
-					if (max == prob1) {
-						sample.set_class(1);
-						class1++;
+					double probs[] = new double[c];
+					for (int i = 0; i < c; ++i) {
+						probs[i] = Probability.getSampleProbability(sample, estimatedProbabilities[i], d);
 					}
-					else if (max == prob2) {
-						sample.set_class(2);
-						class2++;
-					}
-					else if (max == prob3) {
-						sample.set_class(3);
-						class3++;
-					}
-					else if (max == prob4) {
-						sample.set_class(4);
-						class4++;
+					
+					double max = Utils.findMax(probs);
+					for (int i = 0; i < c; ++i) {
+						if (max == probs[i]) {
+							counts[i]++;
+							sample.set_class(i+1);
+							break;
+						}
 					}
 				}
-				System.out.println("Class1: " + class1 + "/250");
-				System.out.println("Class2: " + class2 + "/250");
-				System.out.println("Class3: " + class3 + "/250");
-				System.out.println("Class4: " + class4 + "/250\n");
+				for (int i = 0; i < c; ++i) {
+					System.out.println("Class" + (i+1) + ": " + counts[i] + "/" + samples[i].getSize()/fold);
+				}
+				System.out.println("");
 			}	
 			testingSets.clear();
 		}
@@ -209,47 +105,36 @@ public class App {
 			
 			//for each sample in each classes test set
 			for (ArrayList<Sample> list: testingSets) {
-				int class1 = 0;
-				int class2 = 0;
-				int class3 = 0;
-				int class4 = 0;
-				//System.out.println(list.size());
+				int[] counts = new int[c];
+				
 				for (Sample sample: list) {
 					//classify
-					double prob1 = getSampleProbabilityDependent(sample, estimatedProbabilities[0], d);
-					double prob2 = getSampleProbabilityDependent(sample, estimatedProbabilities[1], d);
-					double prob3 = getSampleProbabilityDependent(sample, estimatedProbabilities[2], d);
-					double prob4 = getSampleProbabilityDependent(sample, estimatedProbabilities[3], d);
-					double max = Double.max(prob4, Double.max(prob3, Double.max(prob1, prob2)));
-					if (max == prob1) {
-						sample.set_class(1);
-						class1++;
+					double probs[] = new double[c];
+					for (int i = 0; i < c; ++i) {
+						probs[i] = Probability.getSampleProbability(sample, estimatedProbabilities[i], d);
 					}
-					else if (max == prob2) {
-						sample.set_class(2);
-						class2++;
-					}
-					else if (max == prob3) {
-						sample.set_class(3);
-						class3++;
-					}
-					else if (max == prob4) {
-						sample.set_class(4);
-						class4++;
+					
+					double max = Utils.findMax(probs);
+					for (int i = 0; i < c; ++i) {
+						if (max == probs[i]) {
+							counts[i]++;
+							sample.set_class(i+1);
+							break;
+						}
 					}
 				}
-				System.out.println("Class1: " + class1 + "/250");
-				System.out.println("Class2: " + class2 + "/250");
-				System.out.println("Class3: " + class3 + "/250");
-				System.out.println("Class4: " + class4 + "/250\n");
+				for (int i = 0; i < c; ++i) {
+					System.out.println("Class" + (i+1) + ": " + counts[i] + "/" + samples[i].getSize()/fold);
+				}
+				System.out.println("");
 			}	
 			testingSets.clear();
 		}
 	
-		Graph g1 = assignWeights(samples[0], d);
-		Graph g2 = assignWeights(samples[1], d);
-		Graph g3 = assignWeights(samples[2], d);
-		Graph g4 = assignWeights(samples[3], d);
+		Graph g1 = Graph.assignWeights(samples[0], d);
+		Graph g2 = Graph.assignWeights(samples[1], d);
+		Graph g3 = Graph.assignWeights(samples[2], d);
+		Graph g4 = Graph.assignWeights(samples[3], d);
 		Graph mst1 = g1.maximumSpanningTree();
 		Graph mst2 = g2.maximumSpanningTree();
 		Graph mst3 = g3.maximumSpanningTree();

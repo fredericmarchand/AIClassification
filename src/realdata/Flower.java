@@ -2,6 +2,8 @@ package realdata;
 
 import java.util.ArrayList;
 
+import statistics.Sample;
+
 public class Flower extends Data {
 	
 	private double _sepalLength;
@@ -65,7 +67,7 @@ public class Flower extends Data {
 	}
 	
 	@Override
-	public void convertToBinary(ArrayList<Integer> thresh) {
+	public void convertToBinary(ArrayList<Double> thresh) {
 		if (_sepalLength < thresh.get(0)) {
 			_sepalLength = 0;
 		}
@@ -95,12 +97,12 @@ public class Flower extends Data {
 		}
 	}
 	
-	public static ArrayList<Integer> getThresholds(ArrayList<Data> list) {
-		ArrayList<Integer> thresholds = new ArrayList<Integer>();
-		int a = 0;
-		int b = 0;
-		int c = 0;
-		int d = 0;
+	public static ArrayList<Double> getThresholds(ArrayList<Data> list) {
+		ArrayList<Double> thresholds = new ArrayList<Double>();
+		double a = 0;
+		double b = 0;
+		double c = 0;
+		double d = 0;
 		for (Data f: list) {
 			a += ((Flower)f).get_sepalLength();
 			b += ((Flower)f).get_sepalWidth();
@@ -108,11 +110,40 @@ public class Flower extends Data {
 			d += ((Flower)f).get_petalWidth();
 		}
 		thresholds.add(a /= list.size());
+		System.out.println(thresholds.get(thresholds.size()-1));
 		thresholds.add(b /= list.size());
 		thresholds.add(c /= list.size());
 		thresholds.add(d /= list.size());
 		
 		return thresholds;
+	}
+
+	@Override
+	public Sample toSample() {
+		int[] data = new int[getDimensions()];
+		data[0] = (int)_sepalLength; 
+		data[1] = (int)_sepalWidth;  
+		data[2] = (int)_petalLength; 
+		data[3] = (int)_petalWidth;       
+		
+		return new Sample(getDimensions(), data, classNameToNum(_class));
+	}
+	
+	public static int classNameToNum(String name) {
+		if (name.equals("Iris-setosa")) {
+			return 0;
+		}
+		else if (name.equals("Iris-versicolor")) {
+			return 1;
+		}
+		else {
+			return 2;
+		}
+	}
+
+	@Override
+	public int getDimensions() {
+		return 4;
 	}
 	
 }

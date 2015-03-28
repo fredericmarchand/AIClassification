@@ -3,6 +3,9 @@ package graph;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import statistics.Sample;
+import statistics.SampleSet;
+
 public class Graph {
 	private ArrayList<Vertex> vertices;
 	private ArrayList<Edge> edges;
@@ -243,6 +246,51 @@ public class Graph {
 		} else if (!vertices.equals(other.vertices))
 			return false;
 		return true;
+	}
+	
+	public static Graph assignWeights(SampleSet samples, int dim) {
+		double [] zeroCounts = new double[dim];
+		double [] oneCounts = new double[dim];
+		
+		Graph graph = new Graph();
+		
+		for (Sample sample: samples.getSamples()) {
+			for (int i = 0; i < dim; ++i) {
+				if (sample.getVector()[i] == 0) 
+					zeroCounts[i]++;
+				else
+					oneCounts[i]++;
+			}
+		}
+		
+		for (int i = 0; i < dim; ++i) {
+			
+			for (int j = 0; j < dim; ++j) {
+				if (i == j)
+					continue;
+				double weight = 0.0;
+				 for (int z = 0; z <= 1; ++z) {
+					 for (int o = 0; o <= 1; ++o) {
+						 double comboCounts = 0.0;
+						 
+						 for (Sample sample: samples.getSamples()) {
+							 if (sample.getVector()[i] == z &&
+								 sample.getVector()[j] == o)
+								 comboCounts++;
+						 }
+						 
+						 double vi = (z == 0 ? zeroCounts[i] : oneCounts[i]);
+						 double vj = (o == 0 ? zeroCounts[j] : oneCounts[j]);
+						 //System.out.println("(" + i + "," + j + "):(" + z + "," + o + ")" + vi/2000 + " " + vj/2000 + " " + comboCounts/2000);
+						 
+						 weight += ((comboCounts/2000) * Math.log((comboCounts/2000)/((vi/2000) * (vj/2000))));
+					 }
+				 }
+				 graph.addEdge(new Edge(new Vertex(i), new Vertex(j), weight));
+			}
+		}
+		
+		return graph;
 	}
 	
 	public static void main (String[] args) {
