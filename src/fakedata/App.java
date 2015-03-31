@@ -14,8 +14,6 @@ public class App {
 	
 	public static final boolean INDEP = true;
 	public static final boolean DEPEN = false;
-
-	
 	
 	//Assumption: probabilities given parent=1 are 1-probability
 	//Assumption: trees are linear the root is the start of the list and the parent of each is the one with index-1
@@ -23,6 +21,10 @@ public class App {
 		int fold = 8; //8-fold cross validation
 		int d = 10;	  //d-dimensional feature space
 		int c = 4;    //c = classes
+		
+		float independentCorrectClassifications = 0;
+		float dependentCorrectClassifications = 0;
+		
 		Probability[][] initialProbabilities = new Probability[c][d];
 		ArrayList<ArrayList<Sample>> testingSets = new ArrayList<ArrayList<Sample>>();
 		Random r = new Random();
@@ -38,7 +40,7 @@ public class App {
 			}
 			System.out.println();
 		}
-		
+		System.out.println();
 		for (int i = 0; i < c; ++i) {
 			samples[i] = new SampleSet(2000, d);
 			samples[i].generateSample(initialProbabilities[i], DEPEN);
@@ -61,6 +63,7 @@ public class App {
 			}
 			
 			//for each sample in each classes test set
+			int testingSetIndex = 0;
 			for (ArrayList<Sample> list: testingSets) {
 				int[] counts = new int[c];
 				
@@ -76,6 +79,9 @@ public class App {
 						if (max == probs[i]) {
 							counts[i]++;
 							sample.set_class(i+1);
+							if (testingSetIndex == i) {
+								independentCorrectClassifications++;
+							}
 							break;
 						}
 					}
@@ -84,9 +90,13 @@ public class App {
 					System.out.println("Class" + (i+1) + ": " + counts[i] + "/" + samples[i].getSize()/fold);
 				}
 				System.out.println("");
+				testingSetIndex++;
 			}	
 			testingSets.clear();
 		}
+		
+		double percentage = (independentCorrectClassifications/8000);
+		System.out.println("Independent Accuracy: " + Utils.roundToDecimals(percentage, 2) + "%\n");
 		
 		System.out.println("DEPENDENT CLASSIFICATION");
 		for (int f = 0; f < fold; ++f) {
@@ -104,6 +114,7 @@ public class App {
 			}
 			
 			//for each sample in each classes test set
+			int testingSetIndex = 0;
 			for (ArrayList<Sample> list: testingSets) {
 				int[] counts = new int[c];
 				
@@ -119,6 +130,9 @@ public class App {
 						if (max == probs[i]) {
 							counts[i]++;
 							sample.set_class(i+1);
+							if (testingSetIndex == i) {
+								dependentCorrectClassifications++;
+							}
 							break;
 						}
 					}
@@ -127,9 +141,13 @@ public class App {
 					System.out.println("Class" + (i+1) + ": " + counts[i] + "/" + samples[i].getSize()/fold);
 				}
 				System.out.println("");
+				testingSetIndex++;
 			}	
 			testingSets.clear();
 		}
+		
+		double percentage2 = (dependentCorrectClassifications/8000);
+		System.out.println("Dependent Accuracy: " + Utils.roundToDecimals(percentage2, 2) + "%\n");
 	
 		Graph g1 = Graph.assignWeights(samples[0], d);
 		Graph g2 = Graph.assignWeights(samples[1], d);

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import statistics.Probability;
 import statistics.Sample;
 import statistics.SampleSet;
+import statistics.Utils;
 
 public class App {
 	
@@ -71,28 +72,31 @@ public class App {
 		return set;
 	}
 	
-	public static double findMax(double array[]) {
-		double max = 0.0;
-		for (int i = 0; i < array.length; ++i) {
-			if (array[i] > max)
-				max = array[i];
-		}
-		return max;
-	}
-	
 	public static void classify(int c, int d, SampleSet samples) {
 		int fold = 8; //8-fold cross validation
+		
+		float independentCorrectClassifications = 0;
+		float dependentCorrectClassifications = 0;
+		
 		ArrayList<ArrayList<Sample>> testingSets = new ArrayList<ArrayList<Sample>>();
+		
+		double[][] estimatedProbabilities = new double[c][d];
+		for (int i = 0; i < c; ++i) {
+			estimatedProbabilities[i] = samples.getProbabilities(i);
+		}
+		
+		for (int i = 0; i < c; ++i) {
+			for (int j = 0; j < d; ++j) {
+				System.out.print(estimatedProbabilities[i][j] + " ");
+			}
+			System.out.println();
+		}
+		System.out.println();
 		
 		//cross-validation
 		System.out.println("INDEPENDENT CLASSIFICATION");
 		for (int f = 0; f < fold; ++f) {
-		
-			double[][] estimatedProbabilities = new double[c][d];
-			for (int i = 0; i < c; ++i) {
-				estimatedProbabilities[i] = samples.getProbabilities(i);
-			}
-			
+
 			//testing 
 			
 			//get testing sets
@@ -101,6 +105,7 @@ public class App {
 			}
 			
 			//for each sample in each classes test set
+			int testingSetIndex = 0;
 			for (ArrayList<Sample> list: testingSets) {
 				int[] counts = new int[c];
 
@@ -111,12 +116,15 @@ public class App {
 						probs[i] = Probability.getSampleProbability(sample, estimatedProbabilities[i], d);
 					}
 					
-					double max = findMax(probs);
+					double max = Utils.findMax(probs);
 					
 					for (int i = 0; i < c; ++i) {
 						if (max == probs[i]) {
 							counts[i]++;
 							sample.set_class(i+1);
+							if (testingSetIndex == i) {
+								independentCorrectClassifications++;
+							}
 							break;
 						}
 					}
@@ -125,18 +133,17 @@ public class App {
 					System.out.println("Class" + (i+1) + ": " + counts[i] + "/" + samples.getSize()/fold);
 				}
 				System.out.println("");
+				testingSetIndex++;
 			}	
 			testingSets.clear();
 		}
 		
+		double percentage = (independentCorrectClassifications/samples.getSize());
+		System.out.println("Independent Accuracy: " + Utils.roundToDecimals(percentage, 2) + "%\n");
+		
 		System.out.println("DEPENDENT CLASSIFICATION");
 		for (int f = 0; f < fold; ++f) {
 		
-			double[][] estimatedProbabilities = new double[c][d];
-			for (int i = 0; i < c; ++i) {
-				estimatedProbabilities[i] = samples.getProbabilities(i);
-			}
-			
 			//testing 
 			
 			//get testing sets
@@ -145,6 +152,7 @@ public class App {
 			}
 			
 			//for each sample in each classes test set
+			int testingSetIndex = 0;
 			for (ArrayList<Sample> list: testingSets) {
 				int[] counts = new int[c];
 				
@@ -155,11 +163,15 @@ public class App {
 						probs[i] = Probability.getSampleProbability(sample, estimatedProbabilities[i], d);
 					}
 					
-					double max = findMax(probs);
+					double max = Utils.findMax(probs);
+
 					for (int i = 0; i < c; ++i) {
 						if (max == probs[i]) {
 							counts[i]++;
 							sample.set_class(i+1);
+							if (testingSetIndex == i) {
+								dependentCorrectClassifications++;
+							}
 							break;
 						}
 					}
@@ -168,9 +180,13 @@ public class App {
 					System.out.println("Class" + (i+1) + ": " + counts[i] + "/" + samples.getSize()/fold);
 				}
 				System.out.println("");
+				testingSetIndex++;
 			}	
 			testingSets.clear();
 		}
+		
+		double percentage2 = (dependentCorrectClassifications/samples.getSize());
+		System.out.println("Dependent Accuracy: " + Utils.roundToDecimals(percentage2, 2) + "%\n");
 	
 		Graph g1 = Graph.assignWeights(samples, d);
 		Graph mst1 = g1.maximumSpanningTree();

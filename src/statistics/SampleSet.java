@@ -88,6 +88,10 @@ public class SampleSet {
 			}
 		}
 
+		for (int i = 0; i < dimensions; ++i) {
+			zeroCounts[i] = (zeroCounts[i]/size);
+		}
+		
 		return zeroCounts;	
 	}
 

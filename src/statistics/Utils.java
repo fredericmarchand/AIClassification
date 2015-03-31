@@ -3,10 +3,12 @@ package statistics;
 public class Utils {
 
 	public static double findMax(double array[]) {
-		double max = 0.0;
+		double max = Double.MIN_VALUE;
+
 		for (int i = 0; i < array.length; ++i) {
-			if (array[i] > max)
+			if (max < array[i]) {
 				max = array[i];
+			}
 		}
 		return max;
 	}
